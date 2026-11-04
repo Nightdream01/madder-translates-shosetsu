@@ -1,4 +1,4 @@
--- {"id":8842107,"ver":"1.0.6","libVer":"1.0.0","author":"Community","repo":"","dep":[]}
+-- {"id":8842107,"ver":"1.0.7","libVer":"1.0.0","author":"Community","repo":"","dep":[]}
 -- Madder Translates source for Shosetsu.
 
 local id = 8842107
@@ -104,19 +104,25 @@ local function parseChapterPage(chapterURL)
     local url = expandURL(chapterURL)
     local document = GETDocument(url)
 
-    -- Madder Translates uses a WordPress-style chapter layout.
-    -- Prefer the article content, not the full page body.
-    local content = document:selectFirst("article .entry-content")
+    -- The site does not expose the chapter inside a standard
+    -- article .entry-content element. Try the theme's content wrappers
+    -- before falling back to the whole document body.
+    local content = document:selectFirst(".post-content")
         or document:selectFirst(".entry-content")
+        or document:selectFirst("#content")
+        or document:selectFirst(".site-main")
+        or document:selectFirst("main")
+        or document:selectFirst(".post")
         or document:selectFirst("article")
         or document:selectFirst("body")
 
     if content == nil then
-        error("Madder Translates: page has no readable body element at " .. url)
+        error("Madder Translates: could not locate chapter content at " .. url)
     end
 
-    -- Remove non-chapter sections when the parser exposes them.
-    content:select("script, style, header, footer, nav, aside, form, .sharedaddy, .comments-area, .post-navigation"):remove()
+    -- Strip site chrome and non-chapter material from whichever wrapper
+    -- was found. This also handles the body fallback safely.
+    content:select("script, style, header, footer, nav, aside, form, .site-header, .site-footer, .main-navigation, .site-navigation, .breadcrumb, .breadcrumbs, .sharedaddy, .comments-area, .post-navigation, .widget-area, .sidebar, .related-posts, .post-meta, .entry-meta"):remove()
     return content
 end
 
