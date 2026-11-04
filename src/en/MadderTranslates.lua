@@ -1,4 +1,4 @@
--- {"id":8842107,"ver":"1.0.0","libVer":"1.0.0","author":"Community","repo":"","dep":[]}
+-- {"id":8842107,"ver":"1.0.1","libVer":"1.0.0","author":"Community","repo":"","dep":[]}
 -- Madder Translates source for Shosetsu.
 -- This extension indexes the novel page and reads chapters from the publisher's site.
 
