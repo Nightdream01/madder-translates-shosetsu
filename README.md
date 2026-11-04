@@ -10,12 +10,10 @@ A standalone Shosetsu source extension for Madder Translates.
 - Chapter text is fetched from the original chapter pages inside Shosetsu.
 
 ## Install
-
-1. Create a public GitHub repository and upload the contents of this folder (keep `index.json` at the repository root).
-2. In Shosetsu, open **More → Repositories → +**.
-3. Repository name: `Madder Translates`
-4. Repository URL: `https://raw.githubusercontent.com/YOUR_GITHUB_USERNAME/YOUR_REPOSITORY/main/`
-5. Save, refresh repositories, then install **Madder Translates** from Browse.
+1. In Shosetsu, open **More → Repositories → +**
+2. . Repository name: `Madder Translates`
+3. Repository URL:`https://raw.githubusercontent.com/Nightdream01/madder-translates-shosetsu/main/`
+4. Save, refresh repositories, then install **Madder Translates** from Browse.
 
 To verify the repository URL, open the URL with `index.json` appended. It should display the JSON catalogue.
 
