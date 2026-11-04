@@ -13,13 +13,17 @@ end
 
 local function absoluteURL(url)
     if url == nil or url == "" then return nil end
-    if url:match("^https?://") then return url end
+    if url:match("^https?://") then
+        -- Always use the canonical non-www host for chapter requests.
+        return (url:gsub("^https?://www%.maddertranslates%.com", baseURL))
+    end
     if url:sub(1, 1) == "/" then return baseURL .. url end
     return baseURL .. "/" .. url
 end
 
 local function shrinkURL(url, _type)
     if url == nil then return "" end
+    url = url:gsub("^https?://www%.maddertranslates%.com", baseURL)
     return (url:gsub("^https?://maddertranslates%.com", ""))
 end
 
