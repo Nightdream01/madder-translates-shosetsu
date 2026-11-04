@@ -104,25 +104,19 @@ local function parseChapterPage(chapterURL)
     local url = expandURL(chapterURL)
     local document = GETDocument(url)
 
-    -- The site does not expose the chapter inside a standard
-    -- article .entry-content element. Try the theme's content wrappers
-    -- before falling back to the whole document body.
-    local content = document:selectFirst(".post-content")
-        or document:selectFirst(".entry-content")
-        or document:selectFirst("#content")
-        or document:selectFirst(".site-main")
-        or document:selectFirst("main")
-        or document:selectFirst(".post")
-        or document:selectFirst("article")
-        or document:selectFirst("body")
+    -- Madder Translates uses the Newsmag theme. The chapter itself is
+    -- inside .td-page-content; the breadcrumb and page title are siblings.
+    local content = document:selectFirst(".td-page-content")
 
     if content == nil then
-        error("Madder Translates: could not locate chapter content at " .. url)
+        error("Madder Translates: could not locate .td-page-content at " .. url)
     end
 
-    -- Strip site chrome and non-chapter material from whichever wrapper
-    -- was found. This also handles the body fallback safely.
-    content:select("script, style, header, footer, nav, aside, form, .site-header, .site-footer, .main-navigation, .site-navigation, .breadcrumb, .breadcrumbs, .sharedaddy, .comments-area, .post-navigation, .widget-area, .sidebar, .related-posts, .post-meta, .entry-meta"):remove()
+    -- Keep the chapter text, but remove the next/TOC links and the
+    -- promotional/ad blocks appended after the chapter.
+    content:select("p:has(a[href*='/wn08/c']), .code-block"):remove()
+    content:select("script, style, iframe, ins, .adsbygoogle"):remove()
+
     return content
 end
 
