@@ -1,4 +1,4 @@
--- {"id":8842107,"ver":"1.0.5","libVer":"1.0.0","author":"Community","repo":"","dep":[]}
+-- {"id":8842107,"ver":"1.0.6","libVer":"1.0.0","author":"Community","repo":"","dep":[]}
 -- Madder Translates source for Shosetsu.
 
 local id = 8842107
