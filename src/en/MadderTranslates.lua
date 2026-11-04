@@ -118,11 +118,6 @@ local function getPassage(chapterURL)
     return pageOfElem(content)
 end
 
-    -- Remove page controls and non-reading elements if they are inside the content wrapper.
-    content:select("script, style, .post-navigation, .navigation, .sharedaddy, .comments-area, form"):remove()
-    return pageOfElem(content)
-end
-
 return {
     id = id,
     name = name,
