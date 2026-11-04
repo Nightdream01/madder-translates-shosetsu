@@ -1,5 +1,6 @@
--- {"id":8842107,"ver":"1.0.4","libVer":"1.0.0","author":"Community","repo":"","dep":[]}
+-- {"id":8842107,"ver":"1.0.0","libVer":"1.0.0","author":"Community","repo":"","dep":[]}
 -- Madder Translates source for Shosetsu.
+-- This extension indexes the novel page and reads chapters from the publisher's site.
 
 local id = 8842107
 local name = "Madder Translates"
@@ -54,7 +55,7 @@ local function parseChapterLinks(document)
 end
 
 local function getListing(_data)
-    GETDocument(absoluteURL(novelURL))
+    local document = GETDocument(absoluteURL(novelURL))
     return {
         Novel {
             title = "Hero of the Rebellion ~A Cliché Otherworld Summoning And Reverse-Transportation To Japan~",
@@ -96,27 +97,22 @@ local function parseNovel(_novelURL, loadChapters)
     return info
 end
 
-local function parseChapterPage(chapterURL)
-    local url = expandURL(chapterURL)
-    local document = GETDocument(url)
+local function getPassage(chapterURL)
+    local document = GETDocument(expandURL(chapterURL))
 
-    -- Madder Translates uses a WordPress-style chapter layout.
-    -- Prefer the article content, not the full page body.
-    local content = document:selectFirst("article .entry-content")
-        or document:selectFirst(".entry-content")
+    -- WordPress content containers, with fallbacks for theme variations.
+    local content = document:selectFirst(".entry-content")
+        or document:selectFirst(".post-content")
         or document:selectFirst("article")
+        or document:selectFirst("main")
 
     if content == nil then
-        error("Madder Translates: could not find chapter content container at " .. url)
+        return "<p>Could not find the chapter text on Madder Translates. Open the chapter in a browser to check whether the site layout has changed.</p>"
     end
 
-    -- Remove page chrome and embedded non-chapter sections if present.
-    content:select("script, style, header, footer, nav, aside, form, .sharedaddy, .comments-area, .post-navigation"):remove()
-    return content
-end
-
-local function getPassage(chapterURL)
-    return pageOfElem(parseChapterPage(chapterURL))
+    -- Remove page controls and non-reading elements if they are inside the content wrapper.
+    content:select("script, style, .post-navigation, .navigation, .sharedaddy, .comments-area, form"):remove()
+    return pageOfElem(content)
 end
 
 return {
