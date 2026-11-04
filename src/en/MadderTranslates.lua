@@ -100,15 +100,23 @@ end
 local function getPassage(chapterURL)
     local document = GETDocument(expandURL(chapterURL))
 
-    -- WordPress content containers, with fallbacks for theme variations.
     local content = document:selectFirst(".entry-content")
         or document:selectFirst(".post-content")
+        or document:selectFirst(".wp-block-post-content")
+        or document:selectFirst(".post-body")
+        or document:selectFirst("#content")
         or document:selectFirst("article")
         or document:selectFirst("main")
+        or document:selectFirst("body")
 
     if content == nil then
-        return "<p>Could not find the chapter text on Madder Translates. Open the chapter in a browser to check whether the site layout has changed.</p>"
+        return "<p>Could not read the chapter page from Madder Translates.</p>"
     end
+
+    content:select("script, style, header, footer, nav, aside, .post-navigation, .navigation, .sharedaddy, .comments-area, .site-header, .site-footer, form"):remove()
+
+    return pageOfElem(content)
+end
 
     -- Remove page controls and non-reading elements if they are inside the content wrapper.
     content:select("script, style, .post-navigation, .navigation, .sharedaddy, .comments-area, form"):remove()
