@@ -1,4 +1,4 @@
--- {"id":8842107,"ver":"1.0.2","libVer":"1.0.0","author":"Community","repo":"","dep":[]}
+-- {"id":8842107,"ver":"1.0.3","libVer":"1.0.0","author":"Community","repo":"","dep":[]}
 -- Madder Translates source for Shosetsu.
 -- This extension indexes the novel page and reads chapters from the publisher's site.
 
@@ -101,37 +101,16 @@ local function getPassage(chapterURL)
     local url = expandURL(chapterURL)
     local document = GETDocument(url)
 
-    -- Madder Translates is a WordPress site. Prefer the post's actual content
-    -- container rather than converting the whole page, which includes the theme.
-    local content = document:selectFirst(
-        "article .entry-content, .entry-content, .wp-block-post-content, " ..
-        ".post-content, .post-body, .article-content, #content"
-    )
-
-    if content == nil then
-        content = document:selectFirst("article")
-            or document:selectFirst("main")
+    -- Return the fetched page body directly. Madder Translates' chapter text
+    -- is present in the page, but its theme container is not reliably matched
+    -- by generic WordPress selectors in Shosetsu's HTML parser.
+    local body = document:selectFirst("body")
+    if body == nil then
+        error("Madder Translates: chapter page has no body element: " .. url)
     end
 
-    if content == nil then
-        content = document:selectFirst("body")
-    end
-
-    if content == nil or trim(content:text()) == "" then
-        return "<p>Could not extract chapter content from Madder Translates.</p>"
-    end
-
-    content:select(
-        "script, style, header, footer, nav, aside, .post-navigation, " ..
-        ".navigation, .sharedaddy, .comments-area, .site-header, " ..
-        ".site-footer, form, .related-posts, .advertisement"
-    ):remove()
-
-    -- The official Shosetsu extensions pass false for the optional title
-    -- argument when returning an already-selected chapter element.
-    return pageOfElem(content, false)
+    return pageOfElem(body, false)
 end
-
 return {
     id = id,
     name = name,
