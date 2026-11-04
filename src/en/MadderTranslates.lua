@@ -1,4 +1,4 @@
--- {"id":8842107,"ver":"1.0.1","libVer":"1.0.0","author":"Community","repo":"","dep":[]}
+-- {"id":8842107,"ver":"1.0.2","libVer":"1.0.0","author":"Community","repo":"","dep":[]}
 -- Madder Translates source for Shosetsu.
 -- This extension indexes the novel page and reads chapters from the publisher's site.
 
@@ -98,24 +98,38 @@ local function parseNovel(_novelURL, loadChapters)
 end
 
 local function getPassage(chapterURL)
-    local document = GETDocument(expandURL(chapterURL))
+    local url = expandURL(chapterURL)
+    local document = GETDocument(url)
 
-    local content = document:selectFirst(".entry-content")
-        or document:selectFirst(".post-content")
-        or document:selectFirst(".wp-block-post-content")
-        or document:selectFirst(".post-body")
-        or document:selectFirst("#content")
-        or document:selectFirst("article")
-        or document:selectFirst("main")
-        or document:selectFirst("body")
+    -- Madder Translates is a WordPress site. Prefer the post's actual content
+    -- container rather than converting the whole page, which includes the theme.
+    local content = document:selectFirst(
+        "article .entry-content, .entry-content, .wp-block-post-content, " ..
+        ".post-content, .post-body, .article-content, #content"
+    )
 
     if content == nil then
-        return "<p>Could not read the chapter page from Madder Translates.</p>"
+        content = document:selectFirst("article")
+            or document:selectFirst("main")
     end
 
-    content:select("script, style, header, footer, nav, aside, .post-navigation, .navigation, .sharedaddy, .comments-area, .site-header, .site-footer, form"):remove()
+    if content == nil then
+        content = document:selectFirst("body")
+    end
 
-    return pageOfElem(content)
+    if content == nil or trim(content:text()) == "" then
+        return "<p>Could not extract chapter content from Madder Translates.</p>"
+    end
+
+    content:select(
+        "script, style, header, footer, nav, aside, .post-navigation, " ..
+        ".navigation, .sharedaddy, .comments-area, .site-header, " ..
+        ".site-footer, form, .related-posts, .advertisement"
+    ):remove()
+
+    -- The official Shosetsu extensions pass false for the optional title
+    -- argument when returning an already-selected chapter element.
+    return pageOfElem(content, false)
 end
 
 return {
