@@ -1,4 +1,4 @@
--- {"id":8842107,"ver":"1.0.4","libVer":"1.0.0","author":"Community","repo":"","dep":[]}
+-- {"id":8842107,"ver":"1.0.5","libVer":"1.0.0","author":"Community","repo":"","dep":[]}
 -- Madder Translates source for Shosetsu.
 
 local id = 8842107
@@ -105,12 +105,13 @@ local function parseChapterPage(chapterURL)
     local content = document:selectFirst("article .entry-content")
         or document:selectFirst(".entry-content")
         or document:selectFirst("article")
+        or document:selectFirst("body")
 
     if content == nil then
-        error("Madder Translates: could not find chapter content container at " .. url)
+        error("Madder Translates: page has no readable body element at " .. url)
     end
 
-    -- Remove page chrome and embedded non-chapter sections if present.
+    -- Remove non-chapter sections when the parser exposes them.
     content:select("script, style, header, footer, nav, aside, form, .sharedaddy, .comments-area, .post-navigation"):remove()
     return content
 end
