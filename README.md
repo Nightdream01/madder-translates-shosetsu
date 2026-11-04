@@ -1,33 +1,35 @@
-# Madder Translates — Shosetsu repository
+# Madder Translates
 
-A standalone Shosetsu source extension for Madder Translates.
+A Shosetsu extension for reading novels from [Madder Translates](https://maddertranslates.com/).
 
-## Included source
+## Features
 
-The extension discovers series automatically from the site's **Web Novel** index:
-
-- The Reincarnated Boy’s Growth Log
-- We Are Not Dating『Yet』!!
-- If I Had To Say, I Would Say I Am A Evil Magician
-- Hero Of The Rebellion
-- A Reincarnated God’s Bride Search
-- The Boy Who Swore Revenge On The World (hiatus)
-
-New series added to the Web Novel index can be picked up automatically, provided they use the same site URL and page structure.
-
-Chapter lists are read from each novel's own table of contents. Chapter text is extracted from the Newsmag page-content container, with navigation, promotional blocks, and ads removed.
+- **Automatic novel discovery:** Loads the novels listed in the site's Web Novel directory. Newly listed novels can appear automatically when they follow the site's existing URL and page structure.
+- **Chapter lists:** Retrieves chapter links from each novel's table of contents.
+- **Clean chapter text:** Extracts the chapter content and removes site navigation, promotional blocks, and advertisements.
+- **Canonical URLs:** Handles both www and non-www versions of the site's URLs.
 
 ## Install
 
-1. In Shosetsu, open **More → Repositories → +**
-2. Repository name: `Madder Translates`
-3. Repository URL: `https://raw.githubusercontent.com/Nightdream01/madder-translates-shosetsu/main/`
-4. Save, refresh repositories, then install **Madder Translates** from Browse.
+1. Open Shosetsu.
+2. Go to **More → Repositories → +**.
+3. Enter the repository URL:
 
-To verify the repository URL, open the URL with `index.json` appended. It should display the JSON catalogue.
+   `https://raw.githubusercontent.com/Nightdream01/madder-translates-shosetsu/main/`
+
+4. Save the repository and refresh the repository list.
+5. Find **Madder Translates** under Browse and install it.
+
+You can check that the repository is reachable by opening the URL above with `index.json` appended.
+
+## Current version
+
+**1.0.9**
+
+The extension is being tested in Shosetsu. Novel discovery, chapter lists, and chapter extraction should be checked across different titles, since site layouts or URL patterns may vary.
 
 ## Notes
 
-- This is an independent, community-made extension, not an official Shosetsu or Madder Translates product.
-- Chapter text remains hosted by Madder Translates. The extension fetches it for reading; it does not bundle or redistribute chapter text.
-- The source has not been run through Shosetsu's official extension tester in this environment. Test it in the app after refreshing the repository.
+- This is an independent, community-made extension. It is not an official product of Shosetsu or Madder Translates.
+- Chapter text is fetched from Madder Translates when you read it. The extension does not bundle chapter text.
+- If a novel is missing or a chapter does not load correctly, please report the novel title and its Madder Translates URL in the repository's Issues section.
